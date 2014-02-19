@@ -5,34 +5,53 @@ var speed = 20,
 			up: false,
 			down: false
 		},
-		velocity = 0
-
+		dx = 0,
+		dy = 0,
+		accel = 0.5,
+		friction = 0.1
 
 
 function render(){
-	console.log(velocity)
+	
 	var moving = false
+	
+	// Accelerate
 	for(key in direction){
 		if(direction[key]){
+			if(key === 'right') dx += accel
+			if(key === 'left') dx -= accel
+			if(key === 'up') dy -= accel
+			if(key === 'down') dy += accel
 			moving = true
-			move(key)
 		}
 	}
-	if(velocity > 0 && !moving) velocity -= 0.5
+
+	if(dx > 0) dx -= friction
+	if(dx < 0) dx += friction
+	if(dy > 0) dy -= friction
+	if(dy < 0) dy += friction
+
+	update()
 }
 
-function move(dir){
-	if(velocity < speed) velocity += 0.5
-	var updatespeed = (dir == 'left' || dir == 'up') ? -velocity : velocity
-
-	if(dir == 'left' || dir == 'right') {
-		$('#box').css({left: '+=' + updatespeed})
-	} else {
-		$('#box').css({top: '+=' + updatespeed})
+function update(){
+	if(dx !== 0){
+		$('#box').css({left: '+=' + dx})
 	}
 
+	if(dy !== 0){
+		$('#box').css({top: '+=' + dy})
+	}
 }
 
+
+	// if(dir == 'left' || dir == 'right') {
+	// 	if(dx < speed) dx += updatespeed
+	// 	$('#box').css({left: '+=' + dx})
+	// } else {
+	// 	if(dy < speed) dy += updatespeed
+	// 	$('#box').css({top: '+=' + dy})
+	// }
 
 
 $(function(){
