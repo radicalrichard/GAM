@@ -10,11 +10,43 @@ var maxspeed = 20,
 		accel = 0.5,
 		friction = 0.1
 
+var enemies = []
+
+for(i=0;i<3;i++){
+	enemies.push(new Enemy())
+}
+
+function updateEnemies(){
+	for(i=0;i<enemies.length;i++){
+		var enemy = enemies[i]
+		enemy.y += enemy.speed
+		enemy.$el.css({left: enemy.x, top: enemy.y})
+		if(enemy.y > $(window).height()){
+			enemy.$el.remove()
+		}
+		checkCollisions(enemy)
+	}
+}
+
+function checkCollisions(enemy){
+	var x = $('#box').offset().left
+	var y = $('#box').offset().top
+	var width = $('#box').width()
+	var height = $('#box').height()
+
+	// if(x + 100 && y + 100 == enemy.x + 100 && enemy.y + 100){
+	// 	console.log('BOOM')
+	// }
+	if (x < enemy.x + enemy.width  && x + width  > enemy.x &&
+    y < enemy.y + enemy.height && y + height > enemy.y) {
+		console.log('BOOM')
+	}
+}
+
 
 function render(){
-	
-	var moving = false
-	
+	updateEnemies()	
+
 	// Accelerate
 	for(key in direction){
 		if(direction[key]){
