@@ -1,38 +1,54 @@
 var speed = 20,
-		direction = null
+		direction = {
+			right: false,
+			left: false,
+			up: false,
+			down: false
+		},
+		velocity = 0
+
+
 
 function render(){
-	console.log(direction)
-
-	if(direction){
-		var updatespeed = (direction == 'left' || direction == 'top') ? -speed : speed
-
-		if(direction == 'left' || direction == 'right') {
-			$('#box').css({left: '+=' + updatespeed})
-		} else {
-			$('#box').css({top: '+=' + updatespeed})
+	console.log(velocity)
+	var moving = false
+	for(key in direction){
+		if(direction[key]){
+			moving = true
+			move(key)
 		}
 	}
+	if(velocity > 0 && !moving) velocity -= 0.5
 }
 
+function move(dir){
+	if(velocity < speed) velocity += 0.5
+	var updatespeed = (dir == 'left' || dir == 'up') ? -velocity : velocity
+
+	if(dir == 'left' || dir == 'right') {
+		$('#box').css({left: '+=' + updatespeed})
+	} else {
+		$('#box').css({top: '+=' + updatespeed})
+	}
+
+}
 
 
 
 $(function(){
 
-	function update(dir){
-		direction = dir
-	}
-	
 	$('body').on('keydown', function( e ) {
-	  if(e.which == 39) update('right')
-	 	if(e.which == 37)	update('left')
-	  if(e.which == 40)	update('down')
-	  if(e.which == 38)	update('top')
+	  if(e.which == 39) direction.right = true
+	 	if(e.which == 37)	direction.left = true
+	  if(e.which == 40)	direction.down = true
+	  if(e.which == 38)	direction.up = true
   })
 
   $('body').on('keyup', function(e){
-  	direction = null
+  	if(e.which == 39) direction.right = false
+	 	if(e.which == 37)	direction.left = false
+	  if(e.which == 40)	direction.down = false
+	  if(e.which == 38)	direction.up = false
   })
 
 })
