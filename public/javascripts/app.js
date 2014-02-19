@@ -1,4 +1,4 @@
-var speed = 20,
+var maxspeed = 20,
 		direction = {
 			right: false,
 			left: false,
@@ -30,6 +30,11 @@ function render(){
 	if(dx < 0) dx += friction
 	if(dy > 0) dy -= friction
 	if(dy < 0) dy += friction
+
+	if(dx > maxspeed) dx = maxspeed
+	if(dx < -maxspeed) dx = -maxspeed
+	if(dy > maxspeed) dy = maxspeed
+	if(dy < -maxspeed) dy = -maxspeed
 
 	update()
 }
