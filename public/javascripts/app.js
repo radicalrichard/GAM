@@ -1,4 +1,5 @@
 var maxspeed = 20,
+		loopId = null,
 		direction = {
 			right: false,
 			left: false,
@@ -8,7 +9,8 @@ var maxspeed = 20,
 		dx = 0,
 		dy = 0,
 		accel = 0.5,
-		friction = 0.1
+		friction = 0.1,
+		ticks = 0
 
 var enemies = []
 
@@ -17,14 +19,16 @@ for(i=0;i<3;i++){
 }
 
 function updateEnemies(){
+	if(Math.floor(Math.random() * 20) == 1) enemies.push(new Enemy())
+	
 	for(i=0;i<enemies.length;i++){
 		var enemy = enemies[i]
 		enemy.y += enemy.speed
 		enemy.$el.css({left: enemy.x, top: enemy.y})
 		if(enemy.y > $(window).height()){
-			enemy.$el.remove()
+			destroyEnemy(enemy, i)
 		}
-		checkCollisions(enemy)
+		if(checkCollisions(enemy)) destroyEnemy(enemy, i)
 	}
 }
 
@@ -34,19 +38,25 @@ function checkCollisions(enemy){
 	var width = $('#box').width()
 	var height = $('#box').height()
 
-	// if(x + 100 && y + 100 == enemy.x + 100 && enemy.y + 100){
-	// 	console.log('BOOM')
-	// }
 	if (x < enemy.x + enemy.width  && x + width  > enemy.x &&
     y < enemy.y + enemy.height && y + height > enemy.y) {
-		console.log('BOOM')
+		cancelAnimationFrame(loopId);
+		$('#menu')
+			.append('last score was ' + $('#score').text())
+			.fadeIn()
+		$('#score').text(0)
+		return true
+	} else{
+		return false
 	}
 }
 
+function destroyEnemy(enemy, i){
+	enemy.death()
+	enemies.splice(i, 1)
+}
 
-function render(){
-	updateEnemies()	
-
+function updatePlayer(){
 	// Accelerate
 	for(key in direction){
 		if(direction[key]){
@@ -68,10 +78,6 @@ function render(){
 	if(dy > maxspeed) dy = maxspeed
 	if(dy < -maxspeed) dy = -maxspeed
 
-	update()
-}
-
-function update(){
 	if(dx !== 0){
 		$('#box').css({left: '+=' + dx})
 	}
@@ -81,17 +87,21 @@ function update(){
 	}
 }
 
-
-	// if(dir == 'left' || dir == 'right') {
-	// 	if(dx < speed) dx += updatespeed
-	// 	$('#box').css({left: '+=' + dx})
-	// } else {
-	// 	if(dy < speed) dy += updatespeed
-	// 	$('#box').css({top: '+=' + dy})
-	// }
+function updateCounter(){
+	ticks++
+	if(ticks % 25 == 0){
+		$('#score').text( Number($('#score').text())+1 )
+	}
+}
 
 
-$(function(){
+$(document).ready(function(){
+
+	$('#start').on('click', function(event){
+		$('#game').removeClass('hidden')
+		$('#menu').hide()
+		gameloop()
+	})
 
 	$('body').on('keydown', function( e ) {
 	  if(e.which == 39) direction.right = true
@@ -109,9 +119,16 @@ $(function(){
 
 })
 
+function render(){
+	updateEnemies()	
+	updatePlayer()
+	updateCounter()
+}
+
+// Main Loop
 function gameloop(){
-	requestAnimFrame(gameloop);
-	render();
+	loopId = requestAnimFrame(gameloop)
+	render()
 }
 
 // shim layer with setTimeout fallback
@@ -120,8 +137,6 @@ return  window.requestAnimationFrame       ||
         window.webkitRequestAnimationFrame ||
         window.mozRequestAnimationFrame    ||
         function( callback ){
-          window.setTimeout(callback, 1000 / 60);
+          window.setTimeout(callback, 1000 / 60)
         };
 })();
-
-gameloop();
