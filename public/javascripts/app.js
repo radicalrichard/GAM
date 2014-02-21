@@ -15,6 +15,8 @@ var Game = {
 		
 	player: new Player(),
 
+	stars: [],
+
 	end: function(){
 		cancelAnimationFrame(Game.loopId);
 		$('#menu')
@@ -27,6 +29,7 @@ var Game = {
 		updateEnemies()	
 		this.player.update()
 		updateCounter()
+		updateStars()
 	},
 
 	// Main Loop
@@ -71,18 +74,57 @@ var Game = {
 		
 		return true
 	}
+}
 
+//stars n shit
+
+var Star = function(){
+	this.x = Math.floor(Math.random() * ($(window).width() + 1))
+	this.y = -100
+	this.width = 100
+	this.height = 100
+	this.speed = Math.floor(Math.random() * 6) + 5
+	this.$el = $('<div>').addClass('star').css({
+		left: this.x,
+		top: this.y,
+		opacity: (this.speed * 7) / 100,
+		width: this.speed/60 + 'em',
+		height: this.speed/60 + 'em'
+	}).appendTo($('#game'))
+
+	this.death = function(){
+		this.$el.remove();
+	}
+}
+function updateStars(){
+	if(Math.floor(Math.random() * 3) == 1) Game.stars.push(new Star())
+	
+	for(i=0;i<Game.stars.length;i++){
+		var star = Game.stars[i]
+		star.y += star.speed
+		star.$el.css({left: star.x, top: star.y})
+		if(star.y > $(window).height()){
+			destroyStar(star, i)
+		}
+	}
+}
+for(i=0;i<3;i++){
+	Game.stars.push(new Star())
+}
+function destroyStar(star, i){
+	star.death()
+	Game.stars.splice(i, 1)
 }
 
 
 var enemies = []
 
-// for(i=0;i<3;i++){
-// 	enemies.push(new Enemy())
-// }
+for(i=0;i<3;i++){
+	enemies.push(new Enemy())
+}
 
 function updateEnemies(){
-	//if(Math.floor(Math.random() * 20) == 1) enemies.push(new Enemy())
+	if(Math.floor(Math.random() * 20) == 1) enemies.push(new Enemy())
 	
 	for(i=0;i<enemies.length;i++){
 		var enemy = enemies[i]

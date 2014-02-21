@@ -59,3 +59,10 @@ a {
 	position: absolute;
 	background: url(/images/satellite.png) 0 0 no-repeat;
 }
+
+.star{
+	width: 1px;
+	height: 1px;
+	position: absolute;
+	background-color: #FFF;
+}
