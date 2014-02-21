@@ -13,3 +13,4 @@ var Enemy = function(){
 		this.$el.remove();
 	}
 }
+

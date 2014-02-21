@@ -1,25 +1,88 @@
-var maxspeed = 20,
-		loopId = null,
-		direction = {
+var direction = {
 			right: false,
 			left: false,
 			up: false,
 			down: false
-		},
-		dx = 0,
-		dy = 0,
-		accel = 0.5,
-		friction = 0.1,
-		ticks = 0
+		}
+
+
+var Game = {
+	loopId: null,
+	
+	ticks: 0,
+	
+	friction: 0.1,
+		
+	player: new Player(),
+
+	end: function(){
+		cancelAnimationFrame(Game.loopId);
+		$('#menu')
+			.append('last score was ' + $('#score').text())
+			.fadeIn()
+		$('#score').text(0)
+	},
+
+	render: function(){
+		updateEnemies()	
+		this.player.update()
+		updateCounter()
+	},
+
+	// Main Loop
+	loop: function(){
+		Game.loopId = requestAnimFrame(Game.loop)
+		Game.render()
+	},
+
+	withinBounds: function(el){
+		var shipBottom = el.y + el.height,
+				shipRight = el.x + el.width
+		var screenBottom = $(window).height(),
+				screenRight = $(window).width()
+		
+		// Bottom
+		if(shipBottom >= screenBottom){
+			el.y = screenBottom - el.height - 5
+			el.dy = 0
+			return false
+		} 
+
+		// Top
+		if(el.y <= 0){
+			el.y = 5
+			el.dy = 0
+			return false
+		}
+
+		// Right
+		if(shipRight >= screenRight){
+			el.x = screenRight - el.width - 5
+			el.dx = 0
+			return false
+		}
+
+		// Left
+		if(el.x <= 0){
+			el.x = 5
+			el.dx = 0
+			return false
+		}
+		
+		return true
+	}
+
+}
+
 
 var enemies = []
 
-for(i=0;i<3;i++){
-	enemies.push(new Enemy())
-}
+// for(i=0;i<3;i++){
+// 	enemies.push(new Enemy())
+// }
 
 function updateEnemies(){
-	if(Math.floor(Math.random() * 20) == 1) enemies.push(new Enemy())
+	//if(Math.floor(Math.random() * 20) == 1) enemies.push(new Enemy())
 	
 	for(i=0;i<enemies.length;i++){
 		var enemy = enemies[i]
@@ -28,26 +91,7 @@ function updateEnemies(){
 		if(enemy.y > $(window).height()){
 			destroyEnemy(enemy, i)
 		}
-		if(checkCollisions(enemy)) destroyEnemy(enemy, i)
-	}
-}
-
-function checkCollisions(enemy){
-	var x = $('#box').offset().left
-	var y = $('#box').offset().top
-	var width = $('#box').width()
-	var height = $('#box').height()
-
-	if (x < enemy.x + enemy.width  && x + width  > enemy.x &&
-    y < enemy.y + enemy.height && y + height > enemy.y) {
-		cancelAnimationFrame(loopId);
-		$('#menu')
-			.append('last score was ' + $('#score').text())
-			.fadeIn()
-		$('#score').text(0)
-		return true
-	} else{
-		return false
+		if(Game.player.checkCollisions(enemy)) destroyEnemy(enemy, i)
 	}
 }
 
@@ -56,51 +100,19 @@ function destroyEnemy(enemy, i){
 	enemies.splice(i, 1)
 }
 
-function updatePlayer(){
-	// Accelerate
-	for(key in direction){
-		if(direction[key]){
-			if(key === 'right') dx += accel
-			if(key === 'left') dx -= accel
-			if(key === 'up') dy -= accel
-			if(key === 'down') dy += accel
-			moving = true
-		}
-	}
-
-	if(dx > 0) dx -= friction
-	if(dx < 0) dx += friction
-	if(dy > 0) dy -= friction
-	if(dy < 0) dy += friction
-
-	if(dx > maxspeed) dx = maxspeed
-	if(dx < -maxspeed) dx = -maxspeed
-	if(dy > maxspeed) dy = maxspeed
-	if(dy < -maxspeed) dy = -maxspeed
-
-	if(dx !== 0){
-		$('#box').css({left: '+=' + dx})
-	}
-
-	if(dy !== 0){
-		$('#box').css({top: '+=' + dy})
-	}
-}
-
 function updateCounter(){
-	ticks++
-	if(ticks % 25 == 0){
+	Game.ticks++
+	if(Game.ticks % 25 == 0){
 		$('#score').text( Number($('#score').text())+1 )
 	}
 }
 
 
 $(document).ready(function(){
-
 	$('#start').on('click', function(event){
 		$('#game').removeClass('hidden')
 		$('#menu').hide()
-		gameloop()
+		Game.loop()
 	})
 
 	$('body').on('keydown', function( e ) {
@@ -119,17 +131,6 @@ $(document).ready(function(){
 
 })
 
-function render(){
-	updateEnemies()	
-	updatePlayer()
-	updateCounter()
-}
-
-// Main Loop
-function gameloop(){
-	loopId = requestAnimFrame(gameloop)
-	render()
-}
 
 // shim layer with setTimeout fallback
 window.requestAnimFrame = (function(){
