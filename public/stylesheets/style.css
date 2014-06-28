@@ -1,29 +1,34 @@
 body {
   padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-  background-color: #000;
-}
-
-a {
-  color: #00B7FF;
+  font-family: 'Orbitron', sans-serif;
 }
 
 .hidden{
 	display: none;
 }
 
+#game{
+  position: absolute;
+  width: 700px;
+  height: 500px;
+  background-color: black;
+  /*background: url(/images/earth.jpg);*/
+  overflow: hidden;
+}
+
 #score{
 	position: absolute;
 	z-index: 20;
+	color: #FFF;
 }
 
 #menu{
-	z-index: 10;
+	z-index: 30;
 	position: absolute;
 	top:10%;
 	left:10%;
-	width: 80%;
-	height: 80%;
+	width: 50%;
+	height: 50%;
 	border: 5px solid #5f5f5f;
 	background-color: #656565;
 	text-align: center;
@@ -34,30 +39,25 @@ a {
 	top: 200px;
 }
 
-#game{
-	position: absolute;
-	top:0; left:0;
-	width: 100%; height: 100%;
-	overflow: hidden;
-}
-
 #box{
-	width: 128px;
-	height: 128px;
+	width: 25px;
+	height: 25px;
 	position: absolute;
 	top: 500px;
 	left: 500px;
-	background: url(/images/ship.png) 0 0 no-repeat;
+  background-color: red;
+	/*background: url(/images/ship.png) 0 0 no-repeat;*/
 	-webkit-transform:rotate(180deg);
 	-moz-transform:rotate(180deg);
 	transform:rotate(180deg);
 }
 
 .enemy{
-	width: 128px;
-	height: 128px;
+	width: 25px;
+	height: 25px;
 	position: absolute;
-	background: url(/images/satellite.png) 0 0 no-repeat;
+  background-color: blue;
+	/*background: url(/images/satellite.png) 0 0 no-repeat;*/
 }
 
 .star{
@@ -65,4 +65,20 @@ a {
 	height: 1px;
 	position: absolute;
 	background-color: #FFF;
+}
+
+.lazor{
+  z-index: 10;
+  width: 2px;
+  height: 6px;
+  position: absolute;
+  background-color: red;
+}
+
+#box.ded{
+  margin-left: -71px;
+  margin-top: -100px;
+	height: 200px;
+	width: 142px;
+	background: url(/images/ded.gif) 50% 50% no-repeat;
 }
