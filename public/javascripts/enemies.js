@@ -8,8 +8,10 @@ var Enemy = function(){
 		left: this.x,
 		top: this.y
 	}).appendTo($('#game'));
+};
 
-	this.death = function(){
-		this.$el.remove();
-	};
+
+Enemy.prototype.death = function() {
+	this.$el.remove();
+	enemies.splice(enemies.indexOf(this), 1);
 };

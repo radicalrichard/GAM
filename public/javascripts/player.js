@@ -1,8 +1,8 @@
 var Player = function(){
-	this.maxspeed = 20;
+	this.maxspeed = 5;
 	this.dx = 0;
 	this.dy = 0;
-	this.accel = 0.5;
+	this.accel = 0.2;
 	this.$el = $('#box');
 	this.width = this.$el.width();
 	this.height = this.$el.height();

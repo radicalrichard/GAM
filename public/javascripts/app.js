@@ -67,7 +67,6 @@ var Game = {
 		if(el.y <= 0){
 			el.y = 5;
 			el.dy = 0;
-			return false;
 		}
 
 		// Right
@@ -83,9 +82,7 @@ var Game = {
 			el.dx = 0;
 			return false;
 		}
-
-		return true;
-	}
+ 	}
 }; // End GAME functions
 
 //stars n shit -------------------------------------------------------
@@ -143,13 +140,12 @@ function updateEnemies(){
 		if(enemy.y > $game.height()){
 			destroyEnemy(enemy, i);
 		}
-		if(Game.player.checkCollisions(enemy)) destroyEnemy(enemy, i);
+		if(Game.player.checkCollisions(enemy)) destroyEnemy(enemy);
 	}
 }
 
-function destroyEnemy(enemy, i){
+function destroyEnemy(enemy){
 	enemy.death();
-	enemies.splice(i, 1);
 }
 
 function updateCounter(){
