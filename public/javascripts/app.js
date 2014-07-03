@@ -22,10 +22,8 @@ var Game = {
 
 	end: function(){
 		cancelAnimationFrame(Game.loopId);
-		$('#menu')
-			.append('last score was ' + $('#score').text())
-			.fadeIn();
-		$('#score').text(0);
+		$('#menu').fadeIn();
+		$('#scoredisplay').html('SCORE: ' + $('#score').text());
 		for(i=0;i<enemies.length;i++){
 			destroyEnemy(enemies[i], i);
 		}
@@ -41,6 +39,7 @@ var Game = {
 
 	start: function(){
 		$('#box').removeClass('ded');
+		$('#score').text(0);
 		Game.loop();
 	},
 
